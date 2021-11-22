@@ -18,7 +18,6 @@ router
     res.render("camps/campNew", { routePage });
   })
   .post(async (req, res) => {
-    console.log(req.body);
     const camp = new Campground(req.body.camp);
     await camp.save();
     res.redirect(`/camps/${camp.id}`);
