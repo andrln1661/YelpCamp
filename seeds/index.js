@@ -26,6 +26,12 @@ const seedDB = async () => {
   }
 };
 
-seedDB().then(() => {
-  mongoose.connection.close();
-});
+seedDB()
+  .then(() => {
+    console.log("Successful Seeded!");
+    mongoose.connection.close();
+  })
+  .catch((error) => {
+    console.log("Error Seeding");
+    console.log(error);
+  });
