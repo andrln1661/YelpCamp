@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Add Camp</title>
+  </head>
+  <body>
+    <form
+      action="/camps/<%= camp.id %>/update?_method=PUT"
+      method="POST"
+    >
+      <label for="title">Title:</label>
+      <input value=<%= camp.title %> type="text" id="title" name="camp[title]/"/>
+      <label for="location">Location:</label>
+      <input value=<%= camp.location%> type="text" id="location" name="camp[location]/"%>/>
+      <button type="submit">Update!</button>
+    </form>
+  </body>
+</html>

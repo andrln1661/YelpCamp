@@ -35,4 +35,18 @@ router
     res.redirect("/camps");
   });
 
+router
+  .route("/:id/update")
+  .get(async (req, res) => {
+    const camp = await Campground.findById(req.params.id);
+    res.render("camps/campUpdate", { camp, routePage });
+  })
+  .put(async (req, res) => {
+    const camp = await Campground.findByIdAndUpdate(
+      req.params.id,
+      {...req.body.camp}
+    ); 
+    res.redirect(`/camps/${req.params.id}`);
+  });
+
 module.exports = router;
