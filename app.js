@@ -35,14 +35,9 @@ app.get("/", (req, res) => {
 
 app.use("/camps", campsRoute);
 
-const port = process.argv[2];
 // Running our shit
+const port = process.argv[2];
 const server = app.listen(port, () => {
   console.log(`App is listening on port ${port}`.black.bgGreen);
 });
 
-process.on("SIGTERM", () => {
-  server.close(() => {
-    console.log("Process terminated");
-  });
-});
