@@ -1,4 +1,5 @@
 # YelpCamp
 Just Trying to do smth
 
-#Simple web application to train node with mongodb
+## What is that
+Simple web application to train node with mongodb
