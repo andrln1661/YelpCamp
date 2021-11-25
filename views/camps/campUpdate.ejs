@@ -1,24 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
-    <title>Add Camp</title>
-  </head>
-  <body>
-    <form
-      action="/camps/<%= camp.id %>/update?_method=PUT"
-      method="POST"
-    >
-      <label for="title">Title:</label>
-      <input value=<%= camp.title %> type="text" id="title" name="camp[title]/"/>
-      <label for="location">Location:</label>
-      <input value=<%= camp.location%> type="text" id="location" name="camp[location]/"%>/>
-      <button type="submit">Update!</button>
-    </form>
-  </body>
-</html>
+<% layout('./layouts/boilerplate') %> 
+<div class="row">
+  <h1 class="text-center">Edit Campground</h1>
+  <div class="col-6 offset-3">
+      <form action="/camps/<%=camp._id%>/update?_method=PUT" method="POST">
+          <div class="mb-3">
+              <label class="form-label" for="title">Title</label>
+              <input class="form-control" type="text" id="title" name="camp[title]"
+                  value="<%=camp.title %>">
+          </div>
+          <div class="mb-3">
+              <label class="form-label" for="location">Location</label>
+              <input class="form-control" type="text" id="location" name="camp[location]"
+                  value="<%=camp.location %>">
+          </div>
+          <div class="mb-3">
+              <label class="form-label" for="image">Image Url</label>
+              <input class="form-control" type="text" id="image" name="campg[image]"
+                  value="<%=camp.image %>">
+          </div>
+          <div class="mb-3">
+              <label class="form-label" for="price">Campground Price</label>
+              <div class="input-group">
+                  <span class="input-group-text" id="price-label">$</span>
+                  <input type="text" class="form-control" id="price" placeholder="0.00" aria-label="price"
+                      aria-describedby="price-label" name="camp[price]" value="<%=camp.price %>">
+              </div>
+          </div>
+
+          <div class="mb-3">
+              <label class="form-label" for="description">Description</label>
+              <textarea class="form-control" type="text" id="description"
+                  name="camp[description]"><%= camp.description%></textarea>
+          </div>
+          <div class="mb-3">
+              <button class="btn btn-info text-light">Update Campground</button>
+          </div>
+      </form>
+      <a href="/camps/<%= camp._id%>" class="btn btn-info text-light">Back To Campground</a>
+
+  </div>
+</div>

@@ -2,20 +2,19 @@ const express = require("express");
 const router = express.Router();
 
 const Campground = require("../models/campground");
-let routePage = "";
 
 router
   .route("/")
   .get(async (req, res) => {
     const campgrounds = await Campground.find({});
-    res.render("camps/campIndex", { campgrounds, routePage });
+    res.render("camps/campIndex", { campgrounds});
   })
   .post();
 
 router
   .route("/create")
   .get((req, res) => {
-    res.render("camps/campNew", { routePage });
+    res.render("camps/campNew");
   })
   .post(async (req, res) => {
     const camp = new Campground(req.body.camp);
@@ -27,7 +26,7 @@ router
   .route("/:id")
   .get(async (req, res) => {
     const camp = await Campground.findById(req.params.id);
-    res.render("camps/campPage", { camp, routePage });
+    res.render("camps/campPage", { camp });
   })
   .delete(async (req, res) => {
     const { id } = req.params;
@@ -39,7 +38,7 @@ router
   .route("/:id/update")
   .get(async (req, res) => {
     const camp = await Campground.findById(req.params.id);
-    res.render("camps/campUpdate", { camp, routePage });
+    res.render("camps/campUpdate", { camp });
   })
   .put(async (req, res) => {
     const camp = await Campground.findByIdAndUpdate(
