@@ -44,6 +44,7 @@ router
     catchAsync(async (req, res) => {
       const camp = new Campground(req.body.camp);
       await camp.save();
+      req.flash("success", "Successfully made a new campground");
       res.redirect(`/camps/${camp.id}`);
     })
   );
@@ -53,6 +54,10 @@ router
   .get(
     catchAsync(async (req, res) => {
       const camp = await Campground.findById(req.params.id).populate("reviews");
+      if (!camp) {
+        req.flash("error", "Cannot find this campground");
+        return res.redirect("/camps");
+      }
       res.render("camps/campPage", { camp });
     })
   )
@@ -60,6 +65,7 @@ router
     catchAsync(async (req, res, next) => {
       const { id } = req.params;
       await Campground.findByIdAndDelete(id);
+      req.flash("success", "Successfully deleted campground");
       res.redirect("/camps");
     })
   );
@@ -77,6 +83,7 @@ router
     catchAsync(async (req, res, next) => {
       if (!req.body.camp) throw new ExpressError("Invalid Camp Data", 400);
       const camp = await Campground.findByIdAndUpdate(req.params.id, { ...req.body.camp });
+      req.flash("success", "Successfully updated campground");
       res.redirect(`/camps/${req.params.id}`);
     })
   );
@@ -89,6 +96,7 @@ router.route("/:id/reviews").post(
     camp.reviews.push(review);
     await review.save();
     await camp.save();
+    req.flash("success", "Created new review!");
     res.redirect(`/camps/${req.params.id}`);
   })
 );
@@ -96,6 +104,7 @@ router.route("/:id/reviews").post(
 router.route("/:id/reviews/:reviewId").delete(
   catchAsync(async (req, res, next) => {
     const review = await Review.findByIdAndDelete(req.params.reviewId);
+    req.flash("success", "Successfully deleted review");
     res.redirect(`/camps/${req.params.id}`);
   })
 );

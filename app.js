@@ -1,11 +1,15 @@
 import express, { urlencoded } from "express";
 import mongoose from "mongoose";
+import session from "express-session";
 import colors from "colors";
-import ejsMate from "ejs-mate";
-import ExpressError from "./utils/ExpressError.js";
-import campsRoute from "./router/camps.js";
+import flash from "connect-flash";
 import methodOverride from "method-override";
-// Just to let node work with ES6 modules
+import ejsMate from "ejs-mate";
+
+import ExpressError from "./utils/ExpressError.js";
+import campsRoute from "./routes/camps.js";
+
+// Just to let node work with ES6 modules(Все пойдет по пизде, если тронуть)
 import { fileURLToPath } from "url";
 import { join, dirname } from "path";
 const __filename = fileURLToPath(import.meta.url);
@@ -25,22 +29,49 @@ db.once("open", () => {
 
 // Express shit
 const app = express();
+
+// Setting EJS and flash msgs
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", join(__dirname, "views"));
+app.use(flash());
+
+// Хуйня для запросов
 app.use(urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+
+// Static shit
+app.use(express.static("public"));
+
+// Session
+const sessionConfig = {
+  secret: "thisshoulbeabettersecret",
+  resave: false,
+  saveUninitialized: true,
+  // Cookies
+  cookie: {
+    httpOnly: true,
+    // expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    // maxAge: 1000 * 60 * 60 * 24 * 7,
+  },
+};
+app.use(session(sessionConfig));
 
 // Home Route
 app.get("/", (req, res) => {
   res.render("home");
 });
 
-// Camps Route
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
 
+// Camps Route
 app.use("/camps", campsRoute);
 
-// Handle All Requests
+// Handle All Request Errors
 app.all("*", (req, res, next) => {
   next(new ExpressError("Page not found", 404));
 });
