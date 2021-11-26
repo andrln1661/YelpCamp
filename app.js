@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const colors = require("colors");
 const ejsMate = require("ejs-mate");
+const ExpressError = require("./utils/ExpressError")
 const campsRoute = require("./router/camps");
 const methodOverride = require("method-override");
 const path = require("path");
@@ -36,6 +37,18 @@ app.get("/", (req, res) => {
 // Camps Route
 
 app.use("/camps", campsRoute);
+
+// Handle All Requests
+app.all('*', (req,res,next)=>{
+  next(new ExpressError('Page not found', 404))
+})
+
+// Handling Errors
+app.use((err,req,res,next)=>{
+  const {statusCode = 500} = err;
+  if (!err.message) err.message = "Smth went wrong";
+  res.status(statusCode).render('error', {err})
+})
 
 // Running our shit
 const port = process.argv[2];
