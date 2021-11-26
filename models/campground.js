@@ -1,13 +1,29 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const { Schema } = mongoose;
+import Review from "./review.js";
 
 const campgroundSchema = new Schema({
   title: String,
   price: Number,
   description: String,
   location: String,
-  owner: String,
-  image: String
+  image: String,
+  reviews: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Review",
+    },
+  ],
 });
 
-module.exports = mongoose.model("Campground", campgroundSchema);
+campgroundSchema.post("findOneAndDelete", async (doc) => {
+  if (doc) {
+    await Review.deleteMany({
+      id: {
+        $in: doc.reviews,
+      },
+    });
+  }
+});
+
+export default mongoose.model("Campground", campgroundSchema);

@@ -1,5 +1,5 @@
 {
-  "type": "commonjs",
+  "type": "module",
   "name": "yelpcamp",
   "version": "1.0.0",
   "main": "index.js",
