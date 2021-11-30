@@ -16,3 +16,13 @@ export const reviewSchema = Joi.object({
     rating: Joi.number().required().min(1).max(5),
   }).required(),
 });
+
+export const userSchema = Joi.object({
+  user: Joi.object({
+    email: Joi.string().email().required(),
+    name: Joi.string().required(),
+    password: Joi.number().required().min(6).max(32),
+    camps: Joi.array(),
+    reviews: Joi.array(),
+  }).required(),
+});

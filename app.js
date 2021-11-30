@@ -5,15 +5,23 @@ import colors from "colors";
 import flash from "connect-flash";
 import methodOverride from "method-override";
 import ejsMate from "ejs-mate";
+import passport from "passport";
+import LocalStrategy from "passport-local";
 
 import ExpressError from "./utils/ExpressError.js";
 import campsRoute from "./routes/camps.js";
+import userRoute from "./routes/user.js";
 
 // Just to let node work with ES6 modules(Все пойдет по пизде, если тронуть)
 import { fileURLToPath } from "url";
 import { join, dirname } from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+// Models
+import User from "./models/user.js";
+import Review from "./models/review.js";
+import Campground from "./models/campground.js";
 
 // Mongoose
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {
@@ -51,11 +59,18 @@ const sessionConfig = {
   // Cookies
   cookie: {
     httpOnly: true,
-    // expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-    // maxAge: 1000 * 60 * 60 * 24 * 7,
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 };
 app.use(session(sessionConfig));
+
+// Passport and auth
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 // Home Route
 app.get("/", (req, res) => {
@@ -70,6 +85,7 @@ app.use((req, res, next) => {
 
 // Camps Route
 app.use("/camps", campsRoute);
+app.use("/user", userRoute);
 
 // Handle All Request Errors
 app.all("*", (req, res, next) => {

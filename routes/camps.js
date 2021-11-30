@@ -1,8 +1,8 @@
 import catchAsync from "../utils/CatchAsync.js";
 import { Router } from "express";
 import ExpressError from "../utils/ExpressError.js";
-import { campSchema, reviewSchema } from "../schemas.js";
 
+import { campSchema, reviewSchema } from "../schemas.js";
 import Campground from "../models/campground.js";
 import Review from "../models/review.js";
 
