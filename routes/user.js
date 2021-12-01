@@ -1,6 +1,8 @@
 import catchAsync from "../utils/CatchAsync.js";
 import { Router } from "express";
 import ExpressError from "../utils/ExpressError.js";
+import passport from "passport";
+
 import User from "../models/user.js";
 
 // Routes
@@ -11,7 +13,15 @@ router
   .get((req, res) => {
     res.render("user/signin");
   })
-  .post(catchAsync(async (req, res) => {}));
+  .post(
+    passport.authenticate("local", { failureFlash: true, failureRedirect: "/user/signin" }),
+    (req, res) => {
+      req.flash("success", "Welcome back");
+      const redirectUrl = req.session.returnTo || "/camps";
+      delete res.session.returnTo;
+      res.redirect(redirectUrl);
+    }
+  );
 
 router
   .route("/signup")
@@ -20,8 +30,28 @@ router
   })
   .post(
     catchAsync(async (req, res) => {
-      res.send(req.body);
+      try {
+        const { email, username, password } = req.body;
+        const user = new User({ email, username });
+        const registredUser = await User.register(user, password);
+        req.login(registredUser, (err) => {
+          if (err) return next(err);
+          req.flash("success", "Welcome back");
+          res.redirect("/camps");
+        });
+        req.flash("success", "Signed Up");
+        res.redirect("/camps");
+      } catch (e) {
+        req.flash("error", e.message);
+        res.redirect("signup");
+      }
     })
   );
+
+router.route("/signout").get((req, res) => {
+  req.logout();
+  req.flash("success", "Goodbye!");
+  res.redirect("/camps");
+});
 
 export default router;

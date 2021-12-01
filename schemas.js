@@ -20,9 +20,6 @@ export const reviewSchema = Joi.object({
 export const userSchema = Joi.object({
   user: Joi.object({
     email: Joi.string().email().required(),
-    name: Joi.string().required(),
-    password: Joi.number().required().min(6).max(32),
-    camps: Joi.array(),
-    reviews: Joi.array(),
+    username: Joi.string().required().min(3),
   }).required(),
 });

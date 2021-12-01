@@ -1,30 +1,11 @@
 import catchAsync from "../utils/CatchAsync.js";
 import { Router } from "express";
 import ExpressError from "../utils/ExpressError.js";
+import { isSignedIn } from "../middleware.js";
 
-import { campSchema, reviewSchema } from "../schemas.js";
 import Campground from "../models/campground.js";
 import Review from "../models/review.js";
-
-// Form Validations
-const validateCamp = (req, res, next) => {
-  const { error } = campSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(msg, 400);
-  } else {
-    next();
-  }
-};
-const validateReview = (req, res, next) => {
-  const { error } = reviewSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(msg, 400);
-  } else {
-    next();
-  }
-};
+import { validateCamp, validateReview } from "../utils/validate.js";
 
 // Routes
 const router = Router();
@@ -36,10 +17,11 @@ router.route("/").get(async (req, res) => {
 
 router
   .route("/create")
-  .get((req, res) => {
+  .get(isSignedIn, (req, res) => {
     res.render("camps/campNew");
   })
   .post(
+    isSignedIn,
     validateCamp,
     catchAsync(async (req, res) => {
       const camp = new Campground(req.body.camp);
@@ -62,6 +44,7 @@ router
     })
   )
   .delete(
+    isSignedIn,
     catchAsync(async (req, res, next) => {
       const { id } = req.params;
       await Campground.findByIdAndDelete(id);
@@ -73,12 +56,14 @@ router
 router
   .route("/:id/update")
   .get(
+    isSignedIn,
     catchAsync(async (req, res) => {
       const camp = await Campground.findById(req.params.id);
       res.render("camps/campUpdate", { camp });
     })
   )
   .put(
+    isSignedIn,
     validateCamp,
     catchAsync(async (req, res, next) => {
       if (!req.body.camp) throw new ExpressError("Invalid Camp Data", 400);
@@ -89,6 +74,7 @@ router
   );
 
 router.route("/:id/reviews").post(
+  isSignedIn,
   validateReview,
   catchAsync(async (req, res, next) => {
     const camp = await Campground.findById(req.params.id);
@@ -102,6 +88,7 @@ router.route("/:id/reviews").post(
 );
 
 router.route("/:id/reviews/:reviewId").delete(
+  isSignedIn,
   catchAsync(async (req, res, next) => {
     const review = await Review.findByIdAndDelete(req.params.reviewId);
     req.flash("success", "Successfully deleted review");
