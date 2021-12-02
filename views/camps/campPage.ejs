@@ -1,5 +1,5 @@
 <% layout('./layouts/boilerplate') %>
-
+<link rel="stylesheet" href="/css/starability.css" />
 <div>
   <div class="row">
     <div class="col-6">
@@ -19,8 +19,16 @@
         </ul>
         <% if(currentUser && camp.author.equals(currentUser.id)) {%>
         <div class="card-body">
-          <a class="card-link btn btn-info text-light" href="/camps/<%=camp._id%>/update">Edit</a>
-          <form class="d-inline" action="/camps/<%=camp._id%>?_method=DELETE" method="POST">
+          <a
+            class="card-link btn btn-info text-light"
+            href="/camps/<%=camp._id%>/update"
+            >Edit</a
+          >
+          <form
+            class="d-inline"
+            action="/camps/<%=camp._id%>?_method=DELETE"
+            method="POST"
+          >
             <button class="btn btn-danger">Delete</button>
           </form>
         </div>
@@ -42,17 +50,53 @@
           method="POST"
         >
           <div class="mb-3">
-            <label class="form-label" for="rating">Rating</label>
-            <input
-              class="form-range"
-              type="range"
-              min="1"
-              max="5"
-              name="review[rating]"
-              value="3"
-              id="rating"
-              required
-            />
+            <fieldset class="starability-checkmark" id="rating" required>
+              <input
+                type="radio"
+                id="no-rate"
+                aria-label="No rating"
+                class="input-no-rate"
+                name="review[rating]"
+                value="1"
+                checked
+              />
+              <input
+                type="radio"
+                id="first-rate1"
+                name="review[rating]"
+                value="1"
+              />
+              <label for="first-rate1" title="Terrible">1 star</label>
+              <input
+                type="radio"
+                id="first-rate2"
+                name="review[rating]"
+                value="2"
+              />
+              <label for="first-rate2" title="Not good">2 stars</label>
+              <input
+                type="radio"
+                id="first-rate3"
+                name="review[rating]"
+                value="3"
+              />
+              <label for="first-rate3" title="Average">3 stars</label>
+              <input
+                type="radio"
+                id="first-rate4"
+                name="review[rating]"
+                value="4"
+              />
+              <label for="first-rate4" title="Very good">4 stars</label>
+              <input
+                type="radio"
+                id="first-rate5"
+                name="review[rating]"
+                value="5"
+              />
+              <label for="first-rate5" title="Amazing">5 stars</label>
+            </fieldset>
+
             <div class="valid-feedback">Thanks for rate</div>
             <div class="invalid-feedback">How can you rate your experience</div>
           </div>
@@ -80,9 +124,14 @@
         <% camp.reviews.reverse().map(review => { %>
         <div class="card mb-3">
           <div class="card-body">
-            <div class="d-flex">
-              <h6 class="">Rating: <%= review.rating %></h6>
-              <h8 class="text-muted ms-auto">By <%= review.author.username %></h8>
+            <div class="d-flex mb-1">
+              <h6><%= review.author.username %></h6>
+              <div
+                class="starability-result ms-auto"
+                data-rating="<%= review.rating %>"
+              >
+                Rated: 3 stars
+              </div>
             </div>
             <p class="card-text"><%= review.body %></p>
             <% if (currentUser && review.author.equals(currentUser.id)) { %>
