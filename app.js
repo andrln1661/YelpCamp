@@ -1,7 +1,6 @@
 import express, { urlencoded } from "express";
 import mongoose from "mongoose";
 import session from "express-session";
-import colors from "colors";
 import flash from "connect-flash";
 import methodOverride from "method-override";
 import ejsMate from "ejs-mate";
@@ -20,8 +19,6 @@ const __dirname = dirname(__filename);
 
 // Models
 import User from "./models/user.js";
-import Review from "./models/review.js";
-import Campground from "./models/campground.js";
 
 // Mongoose
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {
@@ -79,12 +76,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// Home Route
+// Routes
 app.get("/", (req, res) => {
   res.render("home");
 });
-
-// Camps Route
 app.use("/camps", campsRoute);
 app.use("/user", userRoute);
 
@@ -103,5 +98,5 @@ app.use((err, req, res, next) => {
 // Running our shit
 const port = process.argv[2];
 const server = app.listen(port, () => {
-  console.log(`App is listening on port ${port}`.black.bgGreen);
+  console.log(`App is listening on port ${port}`);
 });

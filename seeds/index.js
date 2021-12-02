@@ -1,9 +1,11 @@
-import { connect, connection } from "mongoose";
-import { cities } from "./cities.json";
-import { descriptors, places } from "./seedHelpers.json";
-import Campground, { deleteMany } from "../models/campground";
+import mongoose from "mongoose";
+import cities from "./cities.js";
+import seedHelpers from "./seedHelpers.js";
+const { descriptors, places } = seedHelpers;
+import Campground from "../models/campground.js";
 
-connect("mongodb://localhost:27017/yelp-camp")
+mongoose
+  .connect("mongodb://localhost:27017/yelp-camp")
   .then(console.log("SuccessFul Connected"))
   .catch((error) => {
     console.log("CONNECTION ERROR: ");
@@ -13,11 +15,12 @@ connect("mongodb://localhost:27017/yelp-camp")
 const sample = (array) => array[Math.floor(Math.random() * array.length)];
 
 const seedDB = async () => {
-  await deleteMany({});
+  await Campground.deleteMany({});
   for (let i = 0; i < 50; i++) {
     const random1000 = Math.floor(Math.random() * 1000);
     const price = Math.floor(Math.random() * 20) + 0.99;
     const camp = new Campground({
+      author: "61a8475ce15a6fd14fc32408",
       location: `${cities[random1000].city}, ${cities[random1000].state}`,
       title: `${sample(descriptors)} ${sample(places)}`,
       image: `https://source.unsplash.com/collection/483251`,
@@ -35,7 +38,7 @@ const seedDB = async () => {
 seedDB()
   .then(() => {
     console.log("Successful Seeded!");
-    connection.close();
+    mongoose.connection.close();
   })
   .catch((error) => {
     console.log("Error Seeding");

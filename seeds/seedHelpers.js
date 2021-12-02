@@ -1,5 +1,5 @@
-{
-  "descriptors": [
+export default {
+  descriptors: [
     "Forest",
     "Ancient",
     "Petrified",
@@ -17,10 +17,10 @@
     "Sea",
     "Sky",
     "Dusty",
-    "Diamond"
+    "Diamond",
   ],
 
-  "places": [
+  places: [
     "Flats",
     "Village",
     "Canyon",
@@ -41,6 +41,6 @@
     "Mule Camp",
     "Hunting Camp",
     "Cliffs",
-    "Hollow"
-  ]
-}
+    "Hollow",
+  ],
+};
