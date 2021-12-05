@@ -1,3 +1,5 @@
+import "./config.js";
+
 import express, { urlencoded } from "express";
 import mongoose from "mongoose";
 import session from "express-session";
@@ -90,8 +92,16 @@ app.all("*", (req, res, next) => {
 
 // Handling Errors
 app.use((err, req, res, next) => {
+  if (typeof err != "string") {
+    if (!err.message) err.message = "Smth went wrong";
+  } else {
+    const msg = err;
+    err = {
+      message: msg,
+    };
+  }
+  console.log(err);
   const { statusCode = 500 } = err;
-  if (!err.message) err.message = "Smth went wrong";
   res.status(statusCode).render("error", { err });
 });
 

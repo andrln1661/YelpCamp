@@ -8,20 +8,28 @@ import {
 } from "../utils/middleware.js";
 import * as camps from "../controllers/camps.js";
 import * as reviews from "../controllers/reviews.js";
+import multer from "multer";
+import { storage } from "../cloudinary/index.js";
 
-import Campground from "../models/campground.js";
-import Review from "../models/review.js";
 import { validateCamp, validateReview } from "../utils/validate.js";
 
 // Routes
 const router = Router();
+
+// Where to upload images?
+const upload = multer({ storage });
 
 router.route("/").get(catchAsync(camps.index));
 
 router
   .route("/create")
   .get(isSignedIn, camps.createForm)
-  .post(isSignedIn, validateCamp, catchAsync(camps.create));
+  .post(
+    isSignedIn,
+    upload.array("images"),
+    validateCamp,
+    catchAsync(camps.create)
+  );
 
 router
   .route("/:id")
@@ -35,6 +43,7 @@ router
     isSignedIn,
     isCamp,
     isCampAuthor,
+    upload.array("images"),
     validateCamp,
     catchAsync(camps.update)
   );

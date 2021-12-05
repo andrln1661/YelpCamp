@@ -1,4 +1,4 @@
-import { campSchema, reviewSchema, userSchema } from "../schemas.js";
+import { campSchema, reviewSchema, userSchema } from "./schemas.js";
 import ExpressError from "../utils/ExpressError.js";
 
 // Form Validations

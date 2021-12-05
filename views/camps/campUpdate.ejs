@@ -5,6 +5,7 @@
     <form
       action="/camps/<%=camp._id%>/update?_method=PUT"
       class="needs-validation"
+      enctype="multipart/form-data"
       novalidate
       method="POST"
     >
@@ -33,16 +34,32 @@
         <div class="invalid-feedback">Please specify a location</div>
       </div>
       <div class="mb-3">
-        <label class="form-label" for="image">Image Url</label>
+        <label class="form-label" for="images">Images</label>
         <input
-          required
           class="form-control"
-          type="text"
-          id="image"
-          name="camp[image]"
-          value="<%=camp.image %>"
+          type="file"
+          accept="images"
+          id="images"
+          name="images"
+          multiple
         />
-        <div class="invalid-feedback">Please provide a url for image</div>
+        <div class="invalid-feedback">Please upload image</div>
+      </div>
+      <div class="mb-3">
+        <% camp.images.forEach((img,i) => { %>
+        <div class="form-check-inline">
+          <label for="checkbox<%= i %>">
+            <img src=" <%= img.thumbnail %>  " class="img-thumbnail" alt="" />
+            Delete
+          </label>
+          <input
+            type="checkbox"
+            id="checkbox<%= i %>"
+            name="deleteImages[]"
+            value="<%=img.filename%>"
+          />
+        </div>
+        <% }) %>
       </div>
       <div class="mb-3">
         <label class="form-label" for="price">Campground Price</label>
@@ -72,14 +89,17 @@
           id="description"
           name="camp[description]"
         >
-<%= camp.description%></textarea
-        >
+        <%= camp.description%>
+        </textarea>
         <div class="invalid-feedback">Please give some description</div>
       </div>
+
       <div class="mb-3">
         <button class="btn btn-info text-light">Update Campground</button>
       </div>
     </form>
-    <a href="/camps/<%= camp._id%>" class="btn btn-info text-light">Back To Campground</a>
+    <a href="/camps/<%= camp._id%>" class="btn btn-info text-light"
+      >Back To Campground</a
+    >
   </div>
 </div>
