@@ -1,5 +1,10 @@
 import Campground from "../models/campground.js";
 import { cloudinary } from "../cloudinary/index.js";
+import mbxGeocoding from "@mapbox/mapbox-sdk/services/geocoding.js";
+
+// Get lang and lat for location
+const mbxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mbxToken });
 
 export const index = async (req, res) => {
   const campgrounds = await Campground.find({});
@@ -13,6 +18,13 @@ export const createForm = (req, res) => {
 
 export const create = async (req, res) => {
   const camp = new Campground(req.body.camp);
+  const geoData = await geocoder
+    .forwardGeocode({
+      query: camp.location,
+      limit: 1,
+    })
+    .send();
+  camp.geometry = geoData.body.features[0].geometry;
   camp.images = req.files.map((f) => ({ url: f.path, filename: f.filename }));
   camp.author = req.user.id;
   await camp.save();
