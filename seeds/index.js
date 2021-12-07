@@ -12,17 +12,25 @@ mongoose
     console.log(error);
   });
 
-const sample = (array) => array[Math.floor(Math.random() * array.length)];
+const sample = (array) =>
+  array[Math.floor(Math.random() * array.length)];
 
 const seedDB = async () => {
   await Campground.deleteMany({});
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 100; i++) {
     const random1000 = Math.floor(Math.random() * 1000);
     const price = Math.floor(Math.random() * 20) + 0.99;
     const camp = new Campground({
       author: "61a8475ce15a6fd14fc32408",
       location: `${cities[random1000].city}, ${cities[random1000].state}`,
       title: `${sample(descriptors)} ${sample(places)}`,
+      geometry: {
+        type: "Point",
+        coordinates: [
+          cities[random1000].longitude,
+          cities[random1000].latitude,
+        ],
+      },
       description: `Lorem, ipsum dolor sit amet 
       consectetur adipisicing elit. Facilis eaque earum quidem 
       repellendus velit omnis non, inventore voluptatibus perspiciatis
