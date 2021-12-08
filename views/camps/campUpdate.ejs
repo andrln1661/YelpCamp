@@ -49,7 +49,11 @@
         <% camp.images.forEach((img,i) => { %>
         <div class="form-check-inline">
           <label for="checkbox<%= i %>">
-            <img src=" <%= img.thumbnail %>  " class="img-thumbnail" alt="" />
+            <img
+              src=" <%= img.thumbnail %>  "
+              class="img-thumbnail"
+              alt=""
+            />
             Delete
           </label>
           <input
@@ -81,7 +85,9 @@
       </div>
 
       <div class="mb-3">
-        <label class="form-label" for="description">Description</label>
+        <label class="form-label" for="description"
+          >Description</label
+        >
         <textarea
           required
           class="form-control"
@@ -91,11 +97,15 @@
         >
         <%= camp.description%>
         </textarea>
-        <div class="invalid-feedback">Please give some description</div>
+        <div class="invalid-feedback">
+          Please give some description
+        </div>
       </div>
 
       <div class="mb-3">
-        <button class="btn btn-info text-light">Update Campground</button>
+        <button class="btn btn-info text-light">
+          Update Campground
+        </button>
       </div>
     </form>
     <a href="/camps/<%= camp._id%>" class="btn btn-info text-light"

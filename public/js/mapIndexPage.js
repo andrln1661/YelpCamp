@@ -6,6 +6,8 @@ const map = new mapboxgl.Map({
   zoom: 3, // starting zoom
 });
 
+map.addControl(new mapboxgl.NavigationControl());
+
 const data = {
   type: "FeatureCollection",
   crs: {
