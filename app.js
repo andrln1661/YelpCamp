@@ -102,7 +102,7 @@ app.use((err, req, res, next) => {
 });
 
 // Running our shit
-const port = process.argv[2];
+const port = process.env.PORT || 8269;
 const server = app.listen(port, () => {
   console.log(`App is listening on port ${port}`);
 });
