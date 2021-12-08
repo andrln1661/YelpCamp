@@ -9,8 +9,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECTET,
 });
 
-console.log(process.env.CLOUDINARY_CLOUD_NAME);
-
 export const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {

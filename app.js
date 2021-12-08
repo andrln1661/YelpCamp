@@ -1,4 +1,5 @@
 import "./config.js";
+import { sessionConfig } from "./config.js";
 
 import express, { urlencoded } from "express";
 import mongoose from "mongoose";
@@ -8,6 +9,8 @@ import methodOverride from "method-override";
 import ejsMate from "ejs-mate";
 import passport from "passport";
 import LocalStrategy from "passport-local";
+import mongoSanitize from "express-mongo-sanitize";
+import helmet from "helmet";
 
 import ExpressError from "./utils/ExpressError.js";
 import campsRoute from "./routes/camps.js";
@@ -46,23 +49,61 @@ app.use(flash());
 // Хуйня для запросов
 app.use(urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+app.use(mongoSanitize());
 
 // Static shit
 app.use(express.static("public"));
 
 // Session
-const sessionConfig = {
-  secret: "thisshoulbeabettersecret",
-  resave: false,
-  saveUninitialized: true,
-  // Cookies
-  cookie: {
-    httpOnly: true,
-    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-    maxAge: 1000 * 60 * 60 * 24 * 7,
-  },
-};
 app.use(session(sessionConfig));
+app.use(helmet());
+
+const scriptSrcUrls = [
+  "https://stackpath.bootstrapcdn.com/",
+  "https://api.tiles.mapbox.com/",
+  "https://api.mapbox.com/",
+  "https://kit.fontawesome.com/",
+  "https://cdnjs.cloudflare.com/",
+  "https://cdn.jsdelivr.net",
+  "https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/",
+  "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/",
+];
+const styleSrcUrls = [
+  "https://kit-free.fontawesome.com/",
+  "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/",
+  "https://stackpath.bootstrapcdn.com/",
+  "https://api.mapbox.com/",
+  "https://api.tiles.mapbox.com/",
+  "https://fonts.googleapis.com/",
+  "https://use.fontawesome.com/",
+];
+const connectSrcUrls = [
+  "https://api.mapbox.com/",
+  "https://a.tiles.mapbox.com/",
+  "https://b.tiles.mapbox.com/",
+  "https://events.mapbox.com/",
+];
+const fontSrcUrls = [];
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: [],
+      connectSrc: ["'self'", ...connectSrcUrls],
+      scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+      styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+      workerSrc: ["'self'", "blob:"],
+      objectSrc: [],
+      imgSrc: [
+        "'self'",
+        "blob:",
+        "data:",
+        "https://res.cloudinary.com/setinsky/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
+        "https://images.unsplash.com/",
+      ],
+      fontSrc: ["'self'", ...fontSrcUrls],
+    },
+  })
+);
 
 // Passport and auth
 app.use(passport.initialize());
@@ -100,7 +141,6 @@ app.use((err, req, res, next) => {
       message: msg,
     };
   }
-  console.log(err);
   const { statusCode = 500 } = err;
   res.status(statusCode).render("error", { err });
 });
