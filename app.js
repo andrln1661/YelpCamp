@@ -1,5 +1,4 @@
 import "./config.js";
-import { sessionConfig } from "./config.js";
 
 import express, { urlencoded } from "express";
 import mongoose from "mongoose";
@@ -56,8 +55,28 @@ app.use(mongoSanitize());
 // Static shit
 app.use(express.static("public"));
 
+const secret = process.env.SECRET || "thisshoulbeabettersecret";
 // Session
-app.use(session(sessionConfig));
+app.use(
+  session({
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_ATLAS_URL,
+      touchAfter: 24 * 3600,
+      secret,
+    }),
+    name: "session",
+    secret,
+    resave: false,
+    saveUninitialized: true,
+    // Cookies
+    cookie: {
+      httpOnly: true,
+      // secure: true,
+      expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
+  })
+);
 app.use(helmet());
 app.use(helmet.contentSecurityPolicy(helmetConfig));
 

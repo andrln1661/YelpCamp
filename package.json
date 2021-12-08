@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.13.2",
+    "babel-preset-env": "^1.7.0",
     "cloudinary": "^1.27.1",
     "colors": "^1.4.0",
     "connect-flash": "^0.1.1",
@@ -42,5 +43,8 @@
     "url": "https://github.com/andrln1661/YelpCamp/issues"
   },
   "homepage": "https://github.com/andrln1661/YelpCamp#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "babel-cli": "^6.26.0"
+  }
 }
