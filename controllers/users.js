@@ -24,11 +24,9 @@ export const signup = async (req, res) => {
     const registredUser = await User.register(user, password);
     req.login(registredUser, (err) => {
       if (err) return next(err);
-      req.flash("success", "Welcome back");
+      req.flash("success", "Signed Up");
       res.redirect("/camps");
     });
-    req.flash("success", "Signed Up");
-    res.redirect("/camps");
   } catch (e) {
     req.flash("error", e.message);
     res.redirect("signup");
